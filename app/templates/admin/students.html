@@ -17,6 +17,7 @@
         <th> Email </th>
         <th> Mentor </th>
         <th> Phone </th>
+        <th> University </th>
     </tr>
     {% for student in students %}
     <tr>
@@ -24,6 +25,7 @@
         <td>{{student.email}}</td>
         <td> {{student.mentor.name}} </td>
         <td> {{student.phone}} </td>
+        <td> {{student.university_name}} </td>
         <td><a href={{"/admin/reassign/" + student.id|string}}>Reassign</td>
     </tr>
     {% endfor %}

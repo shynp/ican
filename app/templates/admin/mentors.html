@@ -17,12 +17,15 @@
         <th> Name </th>
         <th> Email </th>
         <th> Phone </th>
+        <th> University </th>
     </tr>
     {% for mentor in mentors %}
     <tr>
         <td>{{mentor.name}}</td>
         <td>{{mentor.email}}</td>
         <td>{{mentor.phone}}</td>
+        <td>{{mentor.university_name}}</td>
+        <td><a href={{"/admin/mentors/edit/" + mentor.id|string}}>Edit</a></td>
     </tr>
     {% endfor %}
 </table>

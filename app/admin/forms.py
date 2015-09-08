@@ -14,11 +14,13 @@ class MultiCheckboxField(SelectMultipleField):
 
 class ReassignForm(Form):
     mentor = SelectField('Which mentor do you want to assign them to', validators=[Required()], coerce=int)
+    university = SelectField('Which university do you want to assign them to', validators=[Required()], coerce=int)
     submit = SubmitField('Reassign')
 
 class EditTaskForm(Form):
     title = StringField('Task Title')
     description = TextField('Task Description')
+    university = SelectField('Which college is this task for?', validators=[Required()], coerce=int)
     deadline = DateField('When is this task due? (YYYY-MM-DD)')
     submit = SubmitField('Update Task')
 
@@ -42,3 +44,15 @@ class FAQCreationForm(Form):
 class EditUniversityForm(Form):
     description = TextAreaField('University Description')
     submit = SubmitField('Update University')
+
+class CreateUniversityForm(Form):
+    name = TextField('University Name')
+    description = TextAreaField('University Description')
+    submit = SubmitField('Create University')
+
+class EditMentorForm(Form):
+    name = TextField('Name')
+    email = TextField('Email')
+    phone = TextField('Phone')
+    university = SelectField('College of mentor', validators=[Required()], coerce=int)
+    submit = SubmitField('Edit Mentor')

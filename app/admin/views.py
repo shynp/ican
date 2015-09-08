@@ -4,7 +4,7 @@ from . import admin
 from ..models import User, University, GeneralTask, FAQ, Task
 from flask import render_template, session, redirect, url_for, current_app, flash
 from .. import db
-from forms import ReassignForm, EditTaskForm, TaskCreationForm, EditFAQForm, FAQCreationForm, EditUniversityForm
+from forms import ReassignForm, EditTaskForm, TaskCreationForm, EditFAQForm, FAQCreationForm, EditUniversityForm, CreateUniversityForm, EditMentorForm
 from ..decorators import admin_required
 from ..email import send_text
 
@@ -21,13 +21,43 @@ def index():
 @admin_required
 def mentors():
     mentors = User.query.filter_by(user_role="mentor").all()
+    print(mentors[0].id)
+    universities = University.query.all()
+    for i in range(len(mentors)):
+        uni_id = mentors[i].university_id - 1 or 0
+        mentors[i].university_name = universities[uni_id].name
     return render_template('admin/mentors.html', mentors=mentors)
+
+@admin.route('/mentors/edit/<mentor_id>', methods=['GET', 'POST'])
+@login_required
+@admin_required
+def edit_mentor(mentor_id):
+    mentor = User.query.filter_by(id=mentor_id).first()
+    form = EditMentorForm(obj=mentor)
+    uni_id = mentor.university_id - 1 or 0
+    university_choices = [(u.id,u.name) for u in University.query.all()]
+    university_choices[uni_id], university_choices[0] = university_choices[0], university_choices[uni_id]
+    form.university.choices = university_choices
+    if form.validate_on_submit():
+        mentor.name = form.name.data
+        mentor.email = form.email.data
+        mentor.phone = form.phone.data
+        mentor.university_id = form.university.data
+        db.session.add(mentor)
+        db.session.commit()
+        flash("Edited data for " + mentor.name)
+        return redirect(url_for('.mentors'))
+    return render_template('admin/edit_mentor.html', mentor=mentor, form=form)
 
 @admin.route('/students')
 @login_required
 @admin_required
 def students():
     students = User.query.filter_by(user_role="student").all()
+    universities = University.query.all()
+    for i in range(len(students)):
+        uni_id = students[i].university_id - 1 or 0
+        students[i].university_name = universities[uni_id].name
     return render_template('admin/students.html', students=students)
 
 @admin.route('/reassign/<student_id>', methods=['GET', 'POST'])
@@ -37,13 +67,18 @@ def reassign(student_id):
     form = ReassignForm()
     student = User.query.get(student_id)
     form.mentor.choices = [(m.id,m.name) for m in User.query.filter_by(user_role="mentor").all()]
+    university_choices = [(u.id,u.name) for u in University.query.all()]
+    uni_id = student.university_id - 1 or 0
+    university_choices[uni_id], university_choices[0] = university_choices[0], university_choices[uni_id]
+    form.university.choices = university_choices
     if form.validate_on_submit():
         mentor = User.query.get(form.mentor.data)
         student.mentor = mentor
+        student.university_id = form.university.data
         db.session.add(student)
         db.session.commit()
         flash("Reassigned " + student.name)
-        return redirect(url_for('.index'))
+        return redirect(url_for('.students'))
 
     return render_template('admin/reassign.html', form=form, student=student)
 
@@ -69,6 +104,25 @@ def edit_universities(university_id):
         return redirect(url_for('.index'))
     return render_template('admin/edit_universities.html', university=university, form=form)
 
+@admin.route('/universities/add_university', methods=['GET', 'POST'])
+@login_required
+@admin_required
+def render_add_university_form():
+    form = CreateUniversityForm()
+    if form.validate_on_submit():
+        universityTest = University.query.filter_by(name=form.name.data).first()
+        if not universityTest:
+            university = University(name=form.name.data,
+                                    description=form.description.data)
+            db.session.add(university)
+            db.session.commit()
+            universities = University.query.all()
+            return redirect(url_for('.universities'))
+        else:
+            flash("A university by this name already exists")
+            return redirect(url_for('.render_add_university_form'))
+    return render_template('/admin/add_university.html', form=form)
+
 @admin.route('/tasks')
 @login_required
 @admin_required
@@ -82,10 +136,15 @@ def tasks():
 def edit_task(task_id):
     task = GeneralTask.query.get(task_id)
     form = EditTaskForm(obj=task)
+    uni_id = task.university_id - 1 or 0
+    university_choices = [(u.id,u.name) for u in University.query.all()]
+    university_choices[uni_id], university_choices[0] = university_choices[0], university_choices[uni_id]
+    form.university.choices = university_choices
     if form.validate_on_submit():
         task.title = form.title.data
         task.description = form.description.data
         task.deadline = form.deadline.data
+        task.university_id = form.university.data
         db.session.add(task)
         db.session.commit()
         flash("Successfully edited task")

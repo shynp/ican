@@ -43,7 +43,7 @@ def populate():
   annie = User(name="Annie Meng", email="anniezmeng@gmail.com", phone='1234567890', password="password", user_role="mentor", university=temple, bio="Lorem ipsum dolor sit amet praesent. Libero vehicula turpis. Neque fermentum augue rutrum accumsan eget pretium sapien eu. Sed sed similique sed turpis suscipit rhoncus justo sapien faucibus commodo nibh. Velit aliquet pellentesque turpis eget in. Arcu eu nec. Nulla sollicitudin quis. In placerat eleifend vestibulum animi nullam amet ipsum lorem et a habitant. Feugiat pellentesque inceptos. Nulla vel cursus. Pulvinar pede augue amet nibh tempus. Leo at sollicitudin. Sit amet quo. Viverra integer nullam felis bibendum lectus. Nulla accumsan ut curabitur velit sollicitudin nam nisl felis. Aliquam aenean exercitation diam facilisis mauris. Nulla sit sollicitudin morbi sit commodo arcu.")
 
   #create students
-  max_mc = User(name="Max McCarthy", email="maxllmcc@icloud.com", password="password", phone='2234567890', user_role="student",university=temple)
+  max_mc = User(name="Max McCarthy", email="maxllmcc@icloud.com", password="password", phone='2678809546', user_role="student",university=temple)
   max_mc.mentor = annie
 
   maya = User(name="Maya Ebsworth", email="maya.ebsworth@gmail.com", password="password", phone='3234567890', user_role="student", university=temple)

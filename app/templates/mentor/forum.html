@@ -9,30 +9,23 @@
 <div class="iframe-wrap">
     <h1 class="page">Forum</h1>
 
-    <!--<iframe class="iframe"
-     src="javascript:void(0)"
-     frameborder="0">
-   </iframe>-->
-   <object class="embed" data="https://groups.google.com/forum/embed/?place=forum/hack4impact&showsearch=true&output=embed&showpopout=true&theme=default">
-    <embed class="embed" src="https://groups.google.com/forum/embed/?place=forum/hack4impact&showsearch=true&output=embed&showpopout=true&theme=default"> </embed>
-    Error: Embedded data could not be displayed.
-  </object>
+    <iframe id="forum_embed"
+      src="javascript:void(0)"
+      scrolling="no"
+      frameborder="0"
+      width="900"
+      height="700">
+    </iframe>
+    <script type="text/javascript">
+      document.getElementById('forum_embed').src =
+         'https://groups.google.com/forum/embed/?place=forum/ican-students-2015'
+         + '&domain=http%3A%2F%2Flocalhost%3A5000&showsearch=true&showpopout=true&showtabs=false'
+         + '&parenturl=' + encodeURIComponent(window.location.href); // + '&output=embed#!forum/ican-students-2015';
+    </script>
+
 
 </div>
 {% endblock %}
 
 {% block scripts %}
-<script type="text/javascript">
-  $(document).ready(function() {
-    $(".embed").height($(document).height());
-    /*$(".iframe").attr("src", function() {
-      return "https://groups.google.com/forum/embed/?place=forum/hack4impact" +
- "&showsearch=true&output=embed&showpopout=true&theme=default&parenturl=" + encodeURIComponent(window.location.href);
-  });*/
-});
-
-  $(document).resize(function() {
-    $(".embed").height($(document).height());
-  });
-</script>
 {% endblock %}

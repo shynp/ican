@@ -3,6 +3,8 @@ from flask import current_app, render_template
 from flask.ext.mail import Message
 from . import mail
 from twilio.rest import TwilioRestClient
+import smtplib
+import os
 
 account_sid = "ACdcb35266e1787a2de79a7789cb382199"
 auth_token = "0e0ca7204a74f30b27c37d0565de8a9f"
@@ -14,6 +16,7 @@ def send_async_email(app, msg):
 
 
 def send_email(to, subject, template, **kwargs):
+    print(os.environ.get('MAIL_USERNAME'))
     app = current_app._get_current_object()
     msg = Message(app.config['ICAN_MAIL_SUBJECT_PREFIX'] + ' ' + subject,
                   sender=app.config['ICAN_MAIL_SENDER'], recipients=[to])
@@ -25,4 +28,4 @@ def send_email(to, subject, template, **kwargs):
 
 
 def send_text(to, body):
-    client.messages.create(to="+1" + to, from_="+12673184464", body=body)
+    client.messages.create(to="+1" + to, from_="+1267469228", body=body)

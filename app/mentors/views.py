@@ -11,7 +11,6 @@ from flask import render_template, session, redirect, url_for, flash, current_ap
 from flask.ext.login import login_required, current_user, login_user
 from twilio.rest import TwilioRestClient
 
-
 @mentors.route('/')
 @login_required
 @mentor_required

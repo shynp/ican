@@ -20,6 +20,9 @@ class User(UserMixin, db.Model):
     tasks = db.relationship('Task', backref='student', lazy='dynamic')
     display_phone = db.Column(db.Boolean) # for mentors only, True: display phone & email; False: display just email
     avatar_hash = db.Column(db.String(32))
+    password_reset_id = db.Column(db.String(32))
+    password_reset_time = db.Column(db.DateTime)
+    password_reset_valid = db.Column(db.Boolean, default=False)
 
     def __init__(self, **kwargs):
         super(User, self).__init__(**kwargs)
@@ -122,7 +125,6 @@ class Task(db.Model):
         self.completed = False
         db.session.add(self)
         db.session.commit()
-
 
 
 class GeneralTask(db.Model):

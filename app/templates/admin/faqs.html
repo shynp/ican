@@ -19,7 +19,8 @@
     <tr>
         <td>{{faq.question}}</td>
         <td><a href={{"/admin/faqs/edit/" + faq.id|string}}>Edit</td>
-        <td><a href={{"/admin/faqs/delete/" + faq.id|string}}>Delete</td>
+        <td><a href={{"/admin/faqs/delete/" + faq.id|string}}>Delete</td> <br>
+        <td><b>Universities:</b> {% for uni in faq.university_names %} <br> {{uni}} {% endfor %}<td>
     </tr>
     {% endfor %}
 </table>

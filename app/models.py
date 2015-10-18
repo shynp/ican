@@ -150,3 +150,26 @@ class FAQ(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     question = db.Column(db.Text)
     answer = db.Column(db.Text)
+    unis = db.Column(db.Text)
+
+    def __repr__(self):
+        return '<FAQ %r>' % self.id
+
+    def set_universities(self, university_ids):
+        str_uni_id = [str(uni_id) for uni_id in university_ids]
+        self.unis = ','.join(str_uni_id)
+        print(self.unis)
+        db.session.add(self)
+        db.session.commit()
+
+    def get_universities(self):
+        if self.unis is None or self.unis == '':
+            return []
+        else:
+            return [int(uni_id) for uni_id in self.unis.split(',')]
+
+    def university_existence(self, u_id):
+        if self.unis is None or self.unis == '':
+            return False
+        else:
+            return u_id in [int(uni_id) for uni_id in self.unis.split(',')]

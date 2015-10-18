@@ -194,6 +194,14 @@ def create_task():
 @admin_required
 def faqs():
     faqs = FAQ.query.all()
+    for faq in faqs:
+        uni_ids = faq.get_universities()
+        uni_names = []
+        for uni_id in uni_ids:
+            uni = University.query.filter_by(id=uni_id).first()
+            if uni:
+                uni_names.append(str(uni.name))
+        faq.university_names = uni_names
     return render_template('admin/faqs.html', faqs=faqs)
 
 @admin.route('/faqs/edit/<faq_id>', methods=['GET', 'POST'])
@@ -202,13 +210,32 @@ def faqs():
 def edit_faq(faq_id):
     faq = FAQ.query.get(faq_id)
     form = EditFAQForm(obj=faq)
+    form.universities.choices = [(university.id, university.name) for university in University.query.all()]
+    form.universities.choices.append((-1, "All"))
+    uni_ids = faq.get_universities()
+
     if form.validate_on_submit():
         faq.question = form.question.data
         faq.answer = form.answer.data
+
+        print(form.universities.data)
+        if -1 in form.universities.data:
+            university_ids = [university.id for university in University.query.all()]
+        else:
+            university_ids = []
+            for uni_id in form.universities.data:
+                uni = University.query.filter_by(id=uni_id).first()
+                if uni:
+                    university_ids.append(uni_id)
+        faq.set_universities(university_ids)
+
         db.session.add(faq)
         db.session.commit()
         flash("Successfully edited FAQ")
-        return redirect(url_for('.index'))
+        return redirect(url_for('.faqs'))
+
+    form.universities.data = uni_ids
+
     return render_template('admin/edit_faq.html', form=form)
 
 @admin.route('/faqs/delete/<faq_id>')
@@ -226,10 +253,24 @@ def delete_faq(faq_id):
 @admin_required
 def create_faq():
     form = FAQCreationForm()
+    form.universities.choices = [(university.id, university.name) for university in University.query.all()]
+    form.universities.choices.append((-1, "All"))
+
     if form.validate_on_submit():
         new_faq = FAQ()
         new_faq.question = form.question.data
         new_faq.answer = form.answer.data
+
+        if -1 in form.universities.data:
+            university_ids = [university.id for university in University.query.all()]
+        else:
+            university_ids = []
+            for uni_id in form.universities.data:
+                uni = University.query.filter_by(id=uni_id).first()
+                if uni:
+                    university_ids.append(uni_id)
+        new_faq.set_universities(university_ids)
+
         db.session.add(new_faq)
         db.session.commit()
         flash("Successfully created FAQ")
@@ -239,7 +280,6 @@ def create_faq():
 
 @admin.route('/send_reminders')
 def send_reminders():
-
     for student in User.query.filter_by(user_role="student").all():
         tasks = student.tasks.filter_by(completed=False).order_by(Task.deadline).all()
         for task in tasks:

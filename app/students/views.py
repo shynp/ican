@@ -27,6 +27,10 @@ def signup():
     form.university.choices = [(u.id, u.name) for u in University.query.all()]
     if form.validate_on_submit():
         student = User.query.filter_by(email=form.email.data).first()
+        existingPhoneNumberTest = User.query.filter_by(phone=form.phone.data).first()
+        if existingPhoneNumberTest:
+            flash("There already exists a user with this phone number.")
+            return redirect(url_for('.signup'))
         if student is None:
             u = University.query.get(form.university.data)
             student = User(email=form.email.data, name=form.name.data,
@@ -117,7 +121,13 @@ def mentor():
 @login_required
 @student_required
 def faq():
-    return render_template('student/faq.html', faqs=FAQ.query)
+    fqs = FAQ.query.all()
+    student_uni = current_user.university_id
+    relevant_faqs = []
+    for fq in fqs:
+        if fq.university_existence(student_uni):
+            relevant_faqs.append(fq)
+    return render_template('student/faq.html', faqs=relevant_faqs)
 
 
 @students.route('/profile')

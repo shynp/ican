@@ -34,11 +34,13 @@ class TaskCreationForm(Form):
 class EditFAQForm(Form):
     question = TextField('Question')
     answer = TextField('Answer')
+    universities = MultiCheckboxField("Universities", coerce=int)
     submit = SubmitField('Update FAQ')
 
 class FAQCreationForm(Form):
     question = TextField('Question')
     answer = TextField('Answer')
+    universities = MultiCheckboxField("Universities", coerce=int)
     submit = SubmitField('Create FAQ')
 
 class EditUniversityForm(Form):

@@ -24,6 +24,10 @@ def signup():
     form.university.choices = [(u.id,u.name) for u in University.query.all()]
     if form.validate_on_submit():
         userTest = User.query.filter_by(email=form.email.data).first()
+        existingPhoneNumberTest = User.query.filter_by(phone=form.phone.data).first()
+        if existingPhoneNumberTest:
+            flash("There already exists a user with this phone number.")
+            return redirect(url_for('.signup'))
         if not userTest:
             u = University.query.get(form.university.data)
             user = User(email=form.email.data,
@@ -38,7 +42,7 @@ def signup():
             login_user(user)
             return redirect(url_for('.index'))
         else:
-            flash("This Username/Password is already in use.")
+            flash("This Username is already in use.")
             return redirect(url_for('.signup'))
     return render_template('mentor/signup.html', form = form)
 

@@ -4,11 +4,11 @@ from . import admin
 from ..models import User, University, GeneralTask, FAQ, Task
 from flask import render_template, session, redirect, url_for, current_app, flash
 from .. import db
-from forms import ReassignForm, EditTaskForm, TaskCreationForm, EditFAQForm, FAQCreationForm, EditUniversityForm, CreateUniversityForm, EditMentorForm
+from forms import ReassignForm, EditTaskForm, TaskCreationForm, EditFAQForm, FAQCreationForm, EditUniversityForm, CreateUniversityForm, EditMentorForm, EditProfileForm
 from ..decorators import admin_required
 from ..email import send_text
 
-from flask.ext.login import login_required
+from flask.ext.login import login_required, current_user
 
 @admin.route('/')
 @login_required
@@ -287,4 +287,28 @@ def send_reminders():
             if deadline_now_diff < datetime.timedelta(1):
                 send_text(student.phone, "Hello there! " + task.title + " is due in less than 24 hours!")
     return 'Reminders sent.'
+
+@admin.route('/edit-admin-account', methods=['GET', 'POST'])
+@login_required
+@admin_required
+def profile_edit():
+    form = EditProfileForm(obj=current_user)
+    if form.validate_on_submit():
+        current_user.email = form.email.data
+        if form.new_password.data and form.current_password:
+            if current_user.verify_password(form.current_password.data):
+                current_user.password = form.new_password.data
+                db.session.add(current_user)
+                db.session.commit()
+                flash('Your profile has been updated')
+            else:
+                flash('Invalid current password; password not updated')
+        else:
+            db.session.add(current_user)
+            db.session.commit()
+            flash('Your profile email has been updated')
+        return redirect(url_for('.index'))
+    form.email.data = current_user.email
+    return render_template('admin/profile-edit.html', student=current_user,
+                           form=form)
 

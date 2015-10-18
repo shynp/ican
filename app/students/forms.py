@@ -20,7 +20,8 @@ class EditProfileForm(Form):
     email = StringField('Email:', validators=[Email()])
     phone = StringField('Phone: ', validators=[Length(min=10,max=10)])
     current_password = PasswordField('Current Password:')
-    new_password = PasswordField('New Password:')
+    new_password = PasswordField('New Password:', validators=[Required(), EqualTo('new_password2', message='Passwords must match')])
+    new_password2 = PasswordField('Re-enter Password:')
     submit = SubmitField('Save')
 
 class CompletedTaskForm(Form):

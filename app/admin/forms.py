@@ -1,6 +1,6 @@
 from flask.ext.wtf import Form
-from wtforms import SelectField, SubmitField, StringField, TextField, DateField, widgets, SelectMultipleField, TextAreaField
-from wtforms.validators import Required
+from wtforms import SelectField, SubmitField, StringField, TextField, DateField, widgets, SelectMultipleField, TextAreaField, PasswordField
+from wtforms.validators import Required, Email, EqualTo
 
 class MultiCheckboxField(SelectMultipleField):
     """
@@ -58,3 +58,10 @@ class EditMentorForm(Form):
     phone = TextField('Phone')
     university = SelectField('College of mentor', validators=[Required()], coerce=int)
     submit = SubmitField('Edit Mentor')
+
+class EditProfileForm(Form):
+    email = StringField('Email:', validators=[Email()])
+    current_password = PasswordField('Current Password:')
+    new_password = PasswordField('New Password:', validators=[Required(), EqualTo('new_password2', message='Passwords must match')])
+    new_password2 = PasswordField('Re-enter Password:')
+    submit = SubmitField('Save')

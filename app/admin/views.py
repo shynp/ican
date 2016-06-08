@@ -21,7 +21,7 @@ def index():
 @admin_required
 def mentors():
     mentors = User.query.filter_by(user_role="mentor").all()
-    print(mentors[0].id)
+    # print(mentors[0].id)
     universities = University.query.all()
     for i in range(len(mentors)):
         uni_id = mentors[i].university_id - 1 or 0
@@ -48,6 +48,14 @@ def edit_mentor(mentor_id):
         flash("Edited data for " + mentor.name)
         return redirect(url_for('.mentors'))
     return render_template('admin/edit_mentor.html', mentor=mentor, form=form)
+
+@admin.route('/mentors/delete/<mentor_id>', methods=['GET', 'POST'])
+@login_required
+@admin_required
+def delete_mentor(mentor_id):
+    User.query.filter_by(id=mentor_id).delete()
+    db.session.commit()
+    return redirect(url_for('.mentors'))
 
 @admin.route('/students')
 @login_required
@@ -81,6 +89,14 @@ def reassign(student_id):
         return redirect(url_for('.students'))
 
     return render_template('admin/reassign.html', form=form, student=student)
+
+@admin.route('/students/delete/<student_id>', methods=['GET', 'POST'])
+@login_required
+@admin_required
+def delete_student(student_id):
+    User.query.filter_by(id=student_id).delete()
+    db.session.commit()
+    return redirect(url_for('.students'))
 
 @admin.route('/universities')
 @login_required

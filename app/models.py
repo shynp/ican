@@ -146,7 +146,7 @@ class University(db.Model):
 
 
 class FAQ(db.Model):
-    __tablename__ = 'faqs'
+    __tablename__ = 'FAQs'
     id = db.Column(db.Integer, primary_key=True)
     question = db.Column(db.Text)
     answer = db.Column(db.Text)

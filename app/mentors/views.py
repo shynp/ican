@@ -150,8 +150,8 @@ def create_tasks():
     return render_template('mentor/task_creation.html', form=form)
 
 
-@mentors.route('/forum')
-@login_required
-@mentor_required
-def forum():
-    return render_template('mentor/forum.html')
+# @mentors.route('/forum')
+# @login_required
+# @mentor_required
+# def forum():
+#     return render_template('mentor/forum.html')

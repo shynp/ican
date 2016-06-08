@@ -186,6 +186,6 @@ def contact():
         return redirect(url_for('.index'))
     return render_template('student/contact.html', form=form)
 
-@students.route('/forum')
-def forum():
-    return render_template('student/forum.html')
+# @students.route('/forum')
+# def forum():
+#     return render_template('student/forum.html')

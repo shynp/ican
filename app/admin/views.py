@@ -53,6 +53,7 @@ def edit_mentor(mentor_id):
 @login_required
 @admin_required
 def delete_mentor(mentor_id):
+    GeneralTask.query.filter_by(user_id=mentor_id).delete()
     User.query.filter_by(id=mentor_id).delete()
     db.session.commit()
     return redirect(url_for('.mentors'))
@@ -94,6 +95,7 @@ def reassign(student_id):
 @login_required
 @admin_required
 def delete_student(student_id):
+    GeneralTask.query.filter_by(user_id=student_id).delete()
     User.query.filter_by(id=student_id).delete()
     db.session.commit()
     return redirect(url_for('.students'))
